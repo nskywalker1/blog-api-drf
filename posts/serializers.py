@@ -12,7 +12,7 @@ class PostCreateUpdateSerializer(serializers.ModelSerializer):
         model = Post
         fields = [
             'title',
-            "description",
+            "body",
             "body",
             "image",
             "tags",
@@ -42,9 +42,9 @@ class PostListSerializer(serializers.ModelSerializer):
             "id",
             "url",
             "title",
+            "body",
             "author",
             "image",
-            "description",
             "category",
             "tags",
         ]
@@ -64,7 +64,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "id",
             "slug",
             "title",
-            "description",
+            "body",
             "body",
             "category",
             "author",
@@ -89,17 +89,13 @@ class PostDetailSerializer(serializers.ModelSerializer):
 class CategoryCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = [
-            'name'
-        ]
+        fields = ['name']
 
 
 class TagCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = [
-            'name'
-        ]
+        fields = ['name']
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -118,6 +114,4 @@ class CommentSerializer(serializers.ModelSerializer):
 class CommentCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = [
-            "body"
-        ]
+        fields = ["body"]
