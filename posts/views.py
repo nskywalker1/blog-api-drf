@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, RetrieveDestroyAPIView
 from rest_framework.views import APIView
+from rest_framework import viewsets, mixins
 from .models import Post, Comment, Category
 from rest_framework.response import Response
 from rest_framework.permissions import (
@@ -13,10 +14,11 @@ from .serializers import (
     PostListSerializer,
     PostDetailSerializer,
     CommentCreateUpdateSerializer,
-    CommentSerializer
+    CommentSerializer,
+    CategorySerializer
 )
 from .pagination import PostLimitOffsetPagination
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
 from .mixins import MultipleFieldLookupMixin
 
 
@@ -39,6 +41,13 @@ class ListPostsAPIView(ListAPIView):
     serializer_class = PostListSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = PostLimitOffsetPagination
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category = self.request.query_params.get('category', None)
+        if category:
+            queryset = queryset.filter(category__slug=category)
+        return queryset
 
 
 class DetailPostAPIView(RetrieveUpdateDestroyAPIView):
@@ -79,3 +88,14 @@ class DetailCommentAPIView(MultipleFieldLookupMixin, RetrieveUpdateDestroyAPIVie
     queryset = Comment.objects.all()
     lookup_field = ["post", "id"]
     serializer_class = CommentCreateUpdateSerializer
+
+
+class CategoryViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAdminOrReadOnly]

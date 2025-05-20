@@ -86,13 +86,13 @@ class PostDetailSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
-class CategoryCreateSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['name']
+        fields = ['id', 'name']
 
 
-class TagCreateSerializer(serializers.ModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ['name']
