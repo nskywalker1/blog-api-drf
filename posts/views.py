@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, RetrieveDestroyAPIView
+from django.shortcuts import get_object_or_404
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
 from rest_framework import viewsets, mixins
-from .models import Post, Comment, Category
+from .models import Post, Comment, Category, Tag
 from rest_framework.response import Response
 from rest_framework.permissions import (
     IsAuthenticated,
@@ -15,7 +15,8 @@ from .serializers import (
     PostDetailSerializer,
     CommentCreateUpdateSerializer,
     CommentSerializer,
-    CategorySerializer
+    CategorySerializer,
+    TagSerializer
 )
 from .pagination import PostLimitOffsetPagination
 from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
@@ -47,6 +48,12 @@ class ListPostsAPIView(ListAPIView):
         category = self.request.query_params.get('category', None)
         if category:
             queryset = queryset.filter(category__slug=category)
+
+        tags = self.request.query_params.get('tags', None)
+        if tags:
+            tag_list = tags.split(',')
+            queryset = queryset.filter(tags__slug__in=tag_list).distinct()
+
         return queryset
 
 
@@ -90,12 +97,11 @@ class DetailCommentAPIView(MultipleFieldLookupMixin, RetrieveUpdateDestroyAPIVie
     serializer_class = CommentCreateUpdateSerializer
 
 
-class CategoryViewSet(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
-):
+class ListCategoriesAPIView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [IsAdminOrReadOnly]
+
+
+class ListTagsAPIView(ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer

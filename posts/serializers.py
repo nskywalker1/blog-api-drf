@@ -95,7 +95,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 class CommentSerializer(serializers.ModelSerializer):
