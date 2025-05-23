@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
-from rest_framework import viewsets, mixins
+from rest_framework import filters
 from .models import Post, Comment, Category, Tag
 from rest_framework.response import Response
 from rest_framework.permissions import (
@@ -42,6 +42,8 @@ class ListPostsAPIView(ListAPIView):
     serializer_class = PostListSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = PostLimitOffsetPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title']
 
     def get_queryset(self):
         queryset = super().get_queryset()

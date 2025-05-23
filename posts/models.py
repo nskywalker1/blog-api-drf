@@ -7,7 +7,7 @@ from django.db.models.signals import pre_save
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -20,7 +20,7 @@ class Category(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -31,7 +31,7 @@ class Tag(models.Model):
 
 
 class Post(models.Model):
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     title = models.CharField(max_length=255)
     body = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
