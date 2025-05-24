@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
 from rest_framework import filters
 from .models import Post, Comment, Category, Tag
 from rest_framework.response import Response
+from rest_framework import viewsets
 from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
-    AllowAny,
 )
 from .serializers import (
     PostCreateUpdateSerializer,
@@ -19,8 +20,31 @@ from .serializers import (
     TagSerializer
 )
 from .pagination import PostLimitOffsetPagination
-from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
+from .permissions import IsOwnerOrReadOnly
 from .mixins import MultipleFieldLookupMixin
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostListSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    pagination_class = PostLimitOffsetPagination
+    lookup_field = 'slug'
+
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['category__slug', 'tags__slug']
+    search_fields = ['title']
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return PostListSerializer
+        elif self.action == 'retrieve':
+            return PostDetailSerializer
+        elif self.action in ['create', 'update', 'partial_update']:
+            return PostCreateUpdateSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class CreatePostAPIView(APIView):

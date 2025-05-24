@@ -1,9 +1,7 @@
 import os
-
 from rest_framework import serializers
 from django.conf import settings
-from rest_framework.fields import SerializerMethodField
-
+from rest_framework.reverse import reverse
 from .models import Comment, Post, Category, Tag
 
 
@@ -50,7 +48,8 @@ class PostListSerializer(serializers.ModelSerializer):
         ]
 
     def get_url(self, obj):
-        return obj.get_api_url()
+        request = self.context.get("request")
+        return reverse('posts_api:posts-detail', kwargs={'slug': obj.slug}, request=request)
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
@@ -103,7 +102,6 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = [
             "id",
-            "post",
             "author",
             "body",
             "created_at",
