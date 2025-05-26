@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import filters
 from .models import Post, Comment, Category, Tag
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework.permissions import (
     IsAuthenticated,
@@ -34,6 +35,18 @@ class PostViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['category__slug', 'tags__slug']
     search_fields = ['title']
+
+    @action(detail=False, methods=['GET'])
+    def categories(self, request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['GET'])
+    def tags(self, request):
+        tags = Tag.objects.all()
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         if self.action == 'list':
