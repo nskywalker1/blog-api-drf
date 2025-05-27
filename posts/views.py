@@ -29,7 +29,7 @@ from .mixins import MultipleFieldLookupMixin
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
     pagination_class = PostLimitOffsetPagination
     lookup_field = 'slug'
 

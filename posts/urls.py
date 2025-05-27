@@ -3,9 +3,6 @@ from django.urls.conf import include
 from rest_framework.routers import DefaultRouter
 
 from .views import (
-    CreatePostAPIView,
-    ListPostsAPIView,
-    DetailPostAPIView,
     CreateCommentAPIView,
     ListCommentsAPIView,
     DetailCommentAPIView,

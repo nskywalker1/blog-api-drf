@@ -11,7 +11,6 @@ class PostCreateUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'title',
             "body",
-            "body",
             "image",
             "tags",
             "category"
