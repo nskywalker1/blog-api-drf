@@ -6,8 +6,6 @@ from .views import (
     CreateCommentAPIView,
     ListCommentsAPIView,
     DetailCommentAPIView,
-    ListCategoriesAPIView,
-    ListTagsAPIView,
     PostViewSet,
 )
 

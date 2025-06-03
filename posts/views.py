@@ -61,50 +61,6 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-# class CreatePostAPIView(APIView):
-#     queryset = Post.objects.all()
-#     authentication_classes = [JWTAuthentication]
-#     serializer_class = PostCreateUpdateSerializer
-#     permission_classes = [IsAuthenticated]
-#
-#     def post(self, request, *args, **kwargs):
-#         serializer = PostCreateUpdateSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save(author=request.user)
-#             return Response(serializer.data, status=200)
-#         else:
-#             return Response({"errors": serializer.errors}, status=400)
-#
-#
-# class ListPostsAPIView(ListAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostListSerializer
-#     permission_classes = [IsAuthenticatedOrReadOnly]
-#     pagination_class = PostLimitOffsetPagination
-#     filter_backends = [filters.SearchFilter]
-#     search_fields = ['title']
-#
-#     def get_queryset(self):
-#         queryset = super().get_queryset()
-#         category = self.request.query_params.get('category', None)
-#         if category:
-#             queryset = queryset.filter(category__slug=category)
-#
-#         tags = self.request.query_params.get('tags', None)
-#         if tags:
-#             tag_list = tags.split(',')
-#             queryset = queryset.filter(tags__slug__in=tag_list).distinct()
-#
-#         return queryset
-#
-#
-# class DetailPostAPIView(RetrieveUpdateDestroyAPIView):
-#     queryset = Post.objects.all()
-#     lookup_field = 'slug'
-#     serializer_class = PostDetailSerializer
-#     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
-
 class CreateCommentAPIView(APIView):
     serializer_class = CommentCreateUpdateSerializer
     authentication_classes = [JWTAuthentication]
