@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework.backends import DjangoFilterBackend
+from rest_framework.exceptions import NotAuthenticated
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
 from rest_framework import filters
@@ -29,7 +30,7 @@ from .mixins import MultipleFieldLookupMixin
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     pagination_class = PostLimitOffsetPagination
     lookup_field = 'slug'
 
@@ -58,7 +59,8 @@ class PostViewSet(viewsets.ModelViewSet):
             return PostCreateUpdateSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        user = self.request.user
+        serializer.save(author=user)
 
 
 class CreateCommentAPIView(APIView):
