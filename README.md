@@ -30,3 +30,5 @@ python -m venv venv
 #### Create superuser
 You need to create superuser if you want to add clothing, categories, size etc.:
 `python manage.py createsuperuser`
+
+Docs for API = `http://127.0.0.1:8000/swagger`
